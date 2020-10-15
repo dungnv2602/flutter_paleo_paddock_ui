@@ -6,8 +6,8 @@ import 'notifiers/index.dart';
 
 const _kScaleDownCurve = Interval(0, 0.3, curve: Curves.easeOutCubic);
 const _kSlideOutCurve = Curves.easeOutCubic;
-const _kScaleUpCurve = Curves.easeInCubic;
-const _kSlideInCurve = Curves.easeInCubic;
+const _kScaleUpCurve = Curves.easeOut;
+const _kSlideInCurve = Curves.easeOut;
 
 const _kScaffoldShadow = BoxShadow(
   color: Color(0x44000000),

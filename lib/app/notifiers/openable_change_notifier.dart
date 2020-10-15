@@ -9,9 +9,13 @@ class OpenableChangeNotifier extends ChangeNotifier {
   OpenableChangeNotifier({
     @required TickerProvider vsync,
     Duration duration,
+    Duration reverseDuration,
   })  : assert(vsync != null),
         _controller = AnimationController(
-            duration: duration ?? 650.milliseconds, vsync: vsync) {
+          duration: duration ?? 600.milliseconds,
+          reverseDuration: reverseDuration ?? 300.milliseconds,
+          vsync: vsync,
+        ) {
     _controller
       ..addListener(notifyListeners)
       ..addStatusListener(_animationStatusListener);
