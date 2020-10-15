@@ -10,9 +10,13 @@ class OpenableStateNotifier extends StateNotifier<OpenableProperties> {
   OpenableStateNotifier({
     @required TickerProvider vsync,
     Duration duration,
+    Duration reverseDuration,
   })  : assert(vsync != null),
         _controller = AnimationController(
-            duration: duration ?? 650.milliseconds, vsync: vsync),
+          duration: duration ?? 600.milliseconds,
+          reverseDuration: reverseDuration ?? 300.milliseconds,
+          vsync: vsync,
+        ),
         super(const OpenableProperties.initial()) {
     _controller
       ..addListener(_animationValueListener)
