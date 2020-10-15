@@ -1,16 +1,22 @@
 # paleo_paddock_ui
 
-A new Flutter project.
+![Gifs](assets/gifs/paleo_paddock_ui_cut.gif)
 
-## Getting Started
+This is an attempt to evaluating several State Management approaches in tackling a UI implementation. I hope this will help you in choosing what to go with.
 
-This project is a starting point for a Flutter application.
+In this repo, I have gone through vanilla approaches, including:
 
-A few resources to get you started if this is your first Flutter project:
+1. InheritedWidget + ChangeNotifier
+2. Provider + ChangeNotifier
+3. Provider + StateNotifier
+4. Riverpod (Coming soon)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+You can check them out in different branches above.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Stream
+
+I personally don't think we will benefits anything from Stream in UI implementation so that State Management using Stream like BLoC/bloc will not be included in this repo.
+
+## Credit
+
+I wanna say thanks to [Stano Bagin](https://dribbble.com/staacopy) and his [design on dribble](https://dribbble.com/shots/2729372-Paleo-Paddock-ios-application-menu-animation) that this version took an inspiration from it.
