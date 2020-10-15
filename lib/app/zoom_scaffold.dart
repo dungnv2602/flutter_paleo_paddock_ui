@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sized_context/sized_context.dart';
 
+import 'openable_change_notifier.dart';
 import 'openable_state.dart';
-import 'openable_state_notifier.dart';
+
+
+
 
 const _kScaleDownCurve = Interval(0, 0.3, curve: Curves.easeOutCubic);
 const _kSlideOutCurve = Curves.easeOutCubic;
@@ -39,7 +42,7 @@ class ZoomScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final properties = context.watch<OpenableProperties>();
+    final properties = context.watch<OpenableChangeNotifier>();
 
     final menuPercent = properties.animationValue;
 

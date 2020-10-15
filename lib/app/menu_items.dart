@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_state_notifier/flutter_state_notifier.dart';
+import 'package:provider/provider.dart';
 import 'package:sized_context/sized_context.dart';
 import 'package:textstyle_extensions/textstyle_extensions.dart';
 import 'package:time/time.dart';
 
 import '../shared/index.dart';
+import 'openable_change_notifier.dart';
 import 'openable_state.dart';
-import 'openable_state_notifier.dart';
 
 class HiddenMenuItems extends StatefulWidget {
   const HiddenMenuItems({
@@ -18,7 +18,7 @@ class HiddenMenuItems extends StatefulWidget {
   })  : assert(initialSelected <= models.length - 1),
         super(key: key);
 
-  final OpenableStateNotifier controller;
+  final OpenableChangeNotifier controller;
   final List<HiddenMenuItemModel> models;
   final ValueChanged<int> onItemSelected;
   final int initialSelected;
@@ -126,7 +126,7 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
     _indicatorYWhenAnIndexIsSelected = Tween<double>(begin: 0, end: 0);
   }
 
-  Widget _buildAnimatedIndicator(OpenableStateNotifier controller) {
+  Widget _buildAnimatedIndicator(OpenableChangeNotifier controller) {
     final indicator = Container(
       width: 5,
       height: _menuItemSize.height,
@@ -141,10 +141,8 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
       child: indicator,
     );
 
-    final indicatorWhenMenuOpenAndClose =
-        StateNotifierBuilder<OpenableProperties>(
-      stateNotifier: controller,
-      builder: (_, properties, __) {
+    final indicatorWhenMenuOpenAndClose = Consumer<OpenableChangeNotifier>(
+      builder: (context, properties, child) {
         final value =
             _indicatorDelayInterval.transform(properties.animationValue);
 
@@ -187,7 +185,7 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
     return indicatorWhenAnIndexIsSelected;
   }
 
-  List<Widget> _buildMenuItems(OpenableStateNotifier controller) {
+  List<Widget> _buildMenuItems(OpenableChangeNotifier controller) {
     final menuItems = <Widget>[];
     for (var index = 0; index < widget.models.length; index++) {
       final model = widget.models[index];
@@ -197,7 +195,7 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
   }
 
   Widget _buildMenuItem(
-      OpenableStateNotifier controller, int index, HiddenMenuItemModel model) {
+      OpenableChangeNotifier controller, int index, HiddenMenuItemModel model) {
     final menuItem = HiddenMenuItem(
       title: model.title,
       icon: model.icon,
@@ -214,8 +212,7 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
       child: menuItem,
     );
 
-    return StateNotifierBuilder<OpenableProperties>(
-      stateNotifier: controller,
+    return Consumer<OpenableChangeNotifier>(
       builder: (context, properties, child) {
         switch (properties.openableState) {
           case OpenableState.closed:
