@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:sized_context/sized_context.dart';
 import 'package:textstyle_extensions/textstyle_extensions.dart';
 import 'package:time/time.dart';
 
 import '../shared/index.dart';
-import 'openable_change_notifier.dart';
-import 'openable_state.dart';
+import 'notifiers/index.dart';
 
 class HiddenMenuItems extends StatefulWidget {
   const HiddenMenuItems({
@@ -141,12 +139,13 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
       child: indicator,
     );
 
-    final indicatorWhenMenuOpenAndClose = Consumer<OpenableChangeNotifier>(
-      builder: (context, properties, child) {
+    final indicatorWhenMenuOpenAndClose = AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
         final value =
-            _indicatorDelayInterval.transform(properties.animationValue);
+            _indicatorDelayInterval.transform(controller.animationValue);
 
-        switch (properties.openableState) {
+        switch (controller.openableState) {
           case OpenableState.closed:
           case OpenableState.closing:
             return Transform(
@@ -212,16 +211,17 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
       child: menuItem,
     );
 
-    return Consumer<OpenableChangeNotifier>(
-      builder: (context, properties, child) {
-        switch (properties.openableState) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        switch (controller.openableState) {
           case OpenableState.closed:
           case OpenableState.closing:
             return fadeMenuItem;
           case OpenableState.opened:
           case OpenableState.opening:
             final value = _menuItemSlideIntervalAt(index)
-                .transform(properties.animationValue);
+                .transform(controller.animationValue);
             final translateY = context.heightPx * (1 - value);
             return Transform(
               transform: Matrix4.translationValues(0, translateY, 0),

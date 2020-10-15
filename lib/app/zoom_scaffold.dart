@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:sized_context/sized_context.dart';
 
-import 'openable_change_notifier.dart';
-import 'openable_state.dart';
-
-
-
+import 'notifiers/index.dart';
 
 const _kScaleDownCurve = Interval(0, 0.3, curve: Curves.easeOutCubic);
 const _kSlideOutCurve = Curves.easeOutCubic;
@@ -20,7 +15,7 @@ const _kScaffoldShadow = BoxShadow(
   spreadRadius: 10,
 );
 
-class ZoomScaffold extends StatelessWidget {
+class ZoomScaffold extends AnimatedWidget {
   const ZoomScaffold({
     Key key,
     this.translationRatio = 0.7,
@@ -30,7 +25,8 @@ class ZoomScaffold extends StatelessWidget {
     this.scaleUpCurve = _kScaleUpCurve,
     this.slideInCurve = _kSlideInCurve,
     @required this.child,
-  }) : super(key: key);
+    @required this.notifier,
+  }) : super(key: key, listenable: notifier);
 
   final Curve scaleDownCurve;
   final double scaleRatio;
@@ -39,17 +35,16 @@ class ZoomScaffold extends StatelessWidget {
   final Curve slideOutCurve;
   final double translationRatio;
   final Widget child;
+  final OpenableChangeNotifier notifier;
 
   @override
   Widget build(BuildContext context) {
-    final properties = context.watch<OpenableChangeNotifier>();
-
-    final menuPercent = properties.animationValue;
+    final menuPercent = notifier.animationValue;
 
     double translationValue;
     double scaleValue;
 
-    switch (properties.openableState) {
+    switch (notifier.openableState) {
       case OpenableState.opened:
       case OpenableState.opening:
         translationValue = context.widthPx *
