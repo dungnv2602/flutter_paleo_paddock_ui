@@ -9,13 +9,9 @@ In this repo, I have gone through several, including:
 1. InheritedWidget + ChangeNotifier
 2. Provider + ChangeNotifier
 3. Provider + StateNotifier
-4. Riverpod (Coming soon, pull request is welcomed)
+4. Riverpod (Thanks to [tbm98](https://github.com/tbm98) for his PRs on riverpod branch)
 
 You can check them out in different branches above.
-
-## Stream
-
-I personally don't think we will benefits anything from Stream in UI implementation so that State Management using Stream like BLoC/bloc will not be included in this repo.
 
 ## Credit
 
