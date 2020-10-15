@@ -5,8 +5,7 @@ import 'package:provider/provider.dart';
 import '../data.dart';
 import '../widgets/index.dart';
 import 'menu_items.dart';
-import 'openable_state_notifier.dart';
-import 'selected_menu_index_notifier.dart';
+import 'notifiers/index.dart';
 import 'zoom_scaffold.dart';
 
 class HiddenMenu extends StatefulWidget {

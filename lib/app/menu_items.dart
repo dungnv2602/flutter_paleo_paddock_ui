@@ -5,8 +5,7 @@ import 'package:textstyle_extensions/textstyle_extensions.dart';
 import 'package:time/time.dart';
 
 import '../shared/index.dart';
-import 'openable_state.dart';
-import 'openable_state_notifier.dart';
+import 'notifiers/index.dart';
 
 class HiddenMenuItems extends StatefulWidget {
   const HiddenMenuItems({

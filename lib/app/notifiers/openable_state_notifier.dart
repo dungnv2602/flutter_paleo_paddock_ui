@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:time/time.dart';
 
-import '../shared/index.dart';
+import '../../shared/index.dart';
 import 'openable_state.dart';
 
 class OpenableStateNotifier extends StateNotifier<OpenableProperties> {

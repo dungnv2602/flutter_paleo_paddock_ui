@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sized_context/sized_context.dart';
-
-import 'openable_state.dart';
-import 'openable_state_notifier.dart';
+import 'notifiers/index.dart';
 
 const _kScaleDownCurve = Interval(0, 0.3, curve: Curves.easeOutCubic);
 const _kSlideOutCurve = Curves.easeOutCubic;
