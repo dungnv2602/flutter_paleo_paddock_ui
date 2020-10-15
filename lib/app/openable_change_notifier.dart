@@ -4,10 +4,6 @@ import 'package:time/time.dart';
 import '../shared/index.dart';
 import 'openable_state.dart';
 
-class SelectedMenuIndexNotifier extends ValueNotifier<int> {
-  SelectedMenuIndexNotifier({int initialIndex}) : super(initialIndex ?? 0);
-}
-
 /// AnimationController wrapper especially designed for open-close widget
 class OpenableChangeNotifier extends ChangeNotifier {
   OpenableChangeNotifier({
