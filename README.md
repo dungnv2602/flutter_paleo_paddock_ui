@@ -2,14 +2,14 @@
 
 ![Gifs](assets/gifs/paleo_paddock_ui_cut.gif)
 
-This is an attempt to evaluating several State Management approaches in tackling a UI implementation. I hope this will help you in choosing what to go with.
+This is an attempt of evaluating several State Management approaches in tackling a UI implementation. I hope this will help you in choosing what to go with.
 
-In this repo, I have gone through vanilla approaches, including:
+In this repo, I have gone through several, including:
 
 1. InheritedWidget + ChangeNotifier
 2. Provider + ChangeNotifier
 3. Provider + StateNotifier
-4. Riverpod (Coming soon)
+4. Riverpod (Coming soon, pull request is welcomed)
 
 You can check them out in different branches above.
 
