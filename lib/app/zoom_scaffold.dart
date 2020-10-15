@@ -16,7 +16,7 @@ const _kScaffoldShadow = BoxShadow(
   spreadRadius: 10,
 );
 
-class ZoomScaffold extends StatelessWidget {
+class ZoomScaffold extends ConsumerWidget {
   const ZoomScaffold({
     Key key,
     this.translationRatio = 0.7,
@@ -37,53 +37,49 @@ class ZoomScaffold extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer(
-      builder: (ctx, watch, _) {
-        final properties = watch(openableProvider.state);
+  Widget build(BuildContext context, ScopedReader watch) {
+    final properties = watch(openableProvider.state);
 
-        final menuPercent = properties.animationValue;
+    final menuPercent = properties.animationValue;
 
-        double translationValue;
-        double scaleValue;
+    double translationValue;
+    double scaleValue;
 
-        switch (properties.openableState) {
-          case OpenableState.opened:
-          case OpenableState.opening:
-            translationValue = context.widthPx *
-                translationRatio *
-                slideOutCurve.transform(menuPercent);
-            scaleValue = 1 - scaleRatio * scaleDownCurve.transform(menuPercent);
-            break;
-          case OpenableState.closed:
-          case OpenableState.closing:
-            translationValue = context.widthPx *
-                translationRatio *
-                slideInCurve.transform(menuPercent);
-            scaleValue = 1 - scaleRatio * scaleUpCurve.transform(menuPercent);
-            break;
-        }
+    switch (properties.openableState) {
+      case OpenableState.opened:
+      case OpenableState.opening:
+        translationValue = context.widthPx *
+            translationRatio *
+            slideOutCurve.transform(menuPercent);
+        scaleValue = 1 - scaleRatio * scaleDownCurve.transform(menuPercent);
+        break;
+      case OpenableState.closed:
+      case OpenableState.closing:
+        translationValue = context.widthPx *
+            translationRatio *
+            slideInCurve.transform(menuPercent);
+        scaleValue = 1 - scaleRatio * scaleUpCurve.transform(menuPercent);
+        break;
+    }
 
-        return Transform(
-          transform: Matrix4.translationValues(
-            translationValue,
-            0,
-            0,
-          )..scale(scaleValue, scaleValue),
-          alignment: Alignment.centerLeft,
-          child: Container(
-            decoration: const BoxDecoration(
-              boxShadow: [
-                _kScaffoldShadow,
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10 * menuPercent),
-              child: child,
-            ),
-          ),
-        );
-      },
+    return Transform(
+      transform: Matrix4.translationValues(
+        translationValue,
+        0,
+        0,
+      )..scale(scaleValue, scaleValue),
+      alignment: Alignment.centerLeft,
+      child: Container(
+        decoration: const BoxDecoration(
+          boxShadow: [
+            _kScaffoldShadow,
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10 * menuPercent),
+          child: child,
+        ),
+      ),
     );
   }
 }

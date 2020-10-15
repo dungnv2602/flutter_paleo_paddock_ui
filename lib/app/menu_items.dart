@@ -144,7 +144,7 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
     );
 
     final indicatorWhenMenuOpenAndClose = Consumer(
-      builder: (ctx, watch, child) {
+      builder: (context, watch, child) {
         final properties = watch(openableProvider.state);
         final value =
             _indicatorDelayInterval.transform(properties.animationValue);
@@ -216,7 +216,7 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
     );
 
     return Consumer(
-      builder: (ctx, watch, child) {
+      builder: (context, watch, child) {
         final properties = watch(openableProvider.state);
         switch (properties.openableState) {
           case OpenableState.closed:

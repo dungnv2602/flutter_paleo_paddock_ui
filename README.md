@@ -9,7 +9,7 @@ In this repo, I have gone through several, including:
 1. InheritedWidget + ChangeNotifier
 2. Provider + ChangeNotifier
 3. Provider + StateNotifier
-4. Riverpod (Coming soon, pull request is welcomed)
+4. Riverpod (Still experimenting)
 
 You can check them out in different branches above.
 

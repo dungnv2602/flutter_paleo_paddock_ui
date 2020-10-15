@@ -1,21 +1,24 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:time/time.dart';
 
 import '../../shared/index.dart';
 import 'openable_state.dart';
 
-final openableProvider = StateNotifierProvider<OpenableStateNotifier>((ref) {
-  return OpenableStateNotifier();
-});
+final openableProvider =
+    StateNotifierProvider.autoDispose<OpenableStateNotifier>(
+        (ref) => OpenableStateNotifier());
 
 class OpenableStateNotifier extends StateNotifier<OpenableProperties> {
   OpenableStateNotifier() : super(const OpenableProperties.initial());
-  AnimationController _controller;
 
-  void initAnimation({AnimationController controller}) {
-    _controller = controller;
-    _controller
+  void vsync(TickerProvider vsync) {
+    _controller = AnimationController(
+      duration: 600.milliseconds,
+      reverseDuration: 300.milliseconds,
+      vsync: vsync,
+    )
       ..addListener(_animationValueListener)
       ..addStatusListener(_animationStatusListener);
   }
@@ -41,6 +44,7 @@ class OpenableStateNotifier extends StateNotifier<OpenableProperties> {
   }
 
   Animation<double> get animation => _controller.view;
+  AnimationController _controller;
 
   void open() => _controller.forward();
 

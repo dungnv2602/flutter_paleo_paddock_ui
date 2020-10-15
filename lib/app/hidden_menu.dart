@@ -17,24 +17,8 @@ class HiddenMenu extends StatefulWidget {
 class _HiddenMenuState extends State<HiddenMenu> with TickerProviderStateMixin {
   @override
   void initState() {
-    // I think there are two ways to solve this problem,
-    // first is to initialize the AnimationController and pass
-    // it to the Provider, the child widgets will get
-    // the Animation's data through the Provider.
-    // The second is to Initialize AnimationController and pass
-    // it directly to the Widgets that need data.
-
-    // this implement just done to work, you can improve by split state/logic
-    // to more providers, it's my idea :D
-    context.read(openableProvider).initAnimation(
-          controller: AnimationController(
-            duration: const Duration(milliseconds: 600),
-            reverseDuration: const Duration(milliseconds: 300),
-            vsync: this,
-          ),
-        );
-
     super.initState();
+    context.read(openableProvider).vsync(this);
   }
 
   @override
@@ -58,19 +42,22 @@ class ZoomScaffoldScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (ctx, watch, child) {
-      debugPrint('ZoomScaffoldScreen rebuild');
+    debugPrint('ZoomScaffoldScreen rebuild');
 
-      final selectedIndex = watch(menuItemSelectedProvider).state;
+    return ZoomScaffold(
+      child: Consumer(
+        builder: (context, watch, child) {
+          debugPrint('ScreenRecipeBuilder rebuild');
 
-      return ZoomScaffold(
-          child: ScreenRecipeBuilder(
-        recipe: restaurantScreens[selectedIndex],
-        onMenuPressed: () {
-          context.read(openableProvider).toggle();
+          return ScreenRecipeBuilder(
+            recipe: restaurantScreens[watch(selectedMenuIndexNotifier.state)],
+            onMenuPressed: () {
+              context.read(openableProvider).toggle();
+            },
+          );
         },
-      ));
-    });
+      ),
+    );
   }
 }
 
@@ -79,41 +66,39 @@ class MenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (ctx, watch, child) {
-        debugPrint('MenuScreen rebuild');
-        final selectedIndex = watch(menuItemSelectedProvider).state;
+    debugPrint('MenuScreen rebuild');
 
-        return Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/paddock/dark_grunge_bk.jpg'),
-              fit: BoxFit.cover,
+    final openable = context.read(openableProvider);
+    final selectedIndex = context.read(selectedMenuIndexNotifier);
+
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/paddock/dark_grunge_bk.jpg'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: Column(
+          children: [
+            MenuTitle(
+              animation: openable.animation,
             ),
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: Column(
-              children: [
-                MenuTitle(
-                  animation: watch(openableProvider).animation,
-                ),
-                HiddenMenuItems(
-                  controller: watch(openableProvider),
-                  onItemSelected: (index) {
-                    context.read(menuItemSelectedProvider).state = index;
-                    context.read(openableProvider).toggle();
-                  },
-                  initialSelected: selectedIndex,
-                  models: restaurantScreens
-                      .map((screen) => HiddenMenuItemModel(title: screen.title))
-                      .toList(growable: false),
-                ),
-              ],
+            HiddenMenuItems(
+              controller: openable,
+              onItemSelected: (index) {
+                selectedIndex.notifySelectedIndex(index);
+                openable.toggle();
+              },
+              initialSelected: context.read(selectedMenuIndexNotifier.state),
+              models: restaurantScreens
+                  .map((screen) => HiddenMenuItemModel(title: screen.title))
+                  .toList(growable: false),
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 }
