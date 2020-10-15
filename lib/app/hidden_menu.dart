@@ -26,6 +26,12 @@ class _HiddenMenuState extends State<HiddenMenu> with TickerProviderStateMixin {
   }
 
   @override
+  void dispose() {
+    _hiddenMenuNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return HiddenMenuProvider(
       controller: _hiddenMenuNotifier,
