@@ -6,15 +6,6 @@ import 'package:time/time.dart';
 import '../shared/index.dart';
 import 'openable_state.dart';
 
-class SelectedMenuIndexNotifier extends StateNotifier<int> {
-  SelectedMenuIndexNotifier({int initialIndex}) : super(initialIndex ?? 0);
-
-  void notifySelectedIndex(int value) {
-    if (state == value) return;
-    state = value;
-  }
-}
-
 class OpenableStateNotifier extends StateNotifier<OpenableProperties> {
   OpenableStateNotifier({
     @required TickerProvider vsync,
