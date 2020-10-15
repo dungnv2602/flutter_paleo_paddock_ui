@@ -16,40 +16,23 @@ class HiddenMenu extends StatefulWidget {
 }
 
 class _HiddenMenuState extends State<HiddenMenu> with TickerProviderStateMixin {
-  OpenableStateNotifier _openableNotifier;
-  SelectedMenuIndexNotifier _selectedIndexNotifier;
-
   @override
   void initState() {
     super.initState();
-    _openableNotifier = OpenableStateNotifier(vsync: this);
-    _selectedIndexNotifier = SelectedMenuIndexNotifier(initialIndex: 2);
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        StateNotifierProvider<OpenableStateNotifier, OpenableProperties>(
-          create: (_) => _openableNotifier,
+    return Stack(
+      children: const [
+        SafeArea(
+          top: false,
+          child: MenuScreen(),
         ),
-        StateNotifierProvider<SelectedMenuIndexNotifier, int>(
-          create: (_) => _selectedIndexNotifier,
+        SafeArea(
+          child: ZoomScaffoldScreen(),
         ),
       ],
-      builder: (_, __) {
-        return Stack(
-          children: const [
-            SafeArea(
-              top: false,
-              child: MenuScreen(),
-            ),
-            SafeArea(
-              child: ZoomScaffoldScreen(),
-            ),
-          ],
-        );
-      },
     );
   }
 }
