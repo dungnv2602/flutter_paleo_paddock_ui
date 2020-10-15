@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_state_notifier/flutter_state_notifier.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sized_context/sized_context.dart';
 import 'package:textstyle_extensions/textstyle_extensions.dart';
 import 'package:time/time.dart';
@@ -47,6 +47,7 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
 
   Curve _menuItemSlideIntervalAt(int index) => _menuItemSlideIntervals[index];
   List<Curve> _menuItemSlideIntervals;
+
   List<Curve> _initializeMenuItemSlideIntervals(int itemCount) {
     const slideInterval = 0.1;
     final slideTime = 1 - itemCount / 10;
@@ -67,6 +68,7 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
   }
 
   Size _menuItemSize = Size.zero;
+
   void _notifyMenuItemSize(Size value) {
     assert(value != null && value != Size.zero);
     if (_menuItemSize == value) return;
@@ -80,6 +82,7 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
   bool _isIndexSelected(int index) => _selectedIndex == index;
   int _selectedIndex;
   int _lastSelectedIndex;
+
   void _notifyAnIndexIsSelected(int index) {
     if (_isIndexSelected(index)) return;
     setState(() {
@@ -140,10 +143,9 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
       child: indicator,
     );
 
-    final indicatorWhenMenuOpenAndClose =
-        StateNotifierBuilder<OpenableProperties>(
-      stateNotifier: controller,
-      builder: (_, properties, __) {
+    final indicatorWhenMenuOpenAndClose = Consumer(
+      builder: (ctx, watch, child) {
+        final properties = watch(openableProvider.state);
         final value =
             _indicatorDelayInterval.transform(properties.animationValue);
 
@@ -213,9 +215,9 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
       child: menuItem,
     );
 
-    return StateNotifierBuilder<OpenableProperties>(
-      stateNotifier: controller,
-      builder: (context, properties, child) {
+    return Consumer(
+      builder: (ctx, watch, child) {
+        final properties = watch(openableProvider.state);
         switch (properties.openableState) {
           case OpenableState.closed:
           case OpenableState.closing:

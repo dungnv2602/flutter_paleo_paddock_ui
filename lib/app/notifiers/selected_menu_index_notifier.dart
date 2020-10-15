@@ -1,10 +1,5 @@
-import 'package:state_notifier/state_notifier.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SelectedMenuIndexNotifier extends StateNotifier<int> {
-  SelectedMenuIndexNotifier({int initialIndex}) : super(initialIndex ?? 0);
-
-  void notifySelectedIndex(int value) {
-    if (state == value) return;
-    state = value;
-  }
-}
+final menuItemSelectedProvider = StateProvider<int>((ref) {
+  return 2;
+});
