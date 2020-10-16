@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'shared/index.dart';
-import 'widgets/index.dart';
+import 'shared/_shared.dart';
+import 'widgets/_widgets.dart';
 
 final restaurantScreens = [
   ScreenRecipe(

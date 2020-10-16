@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sized_context/sized_context.dart';
 
-import 'notifiers/index.dart';
+import 'notifiers/_notifiers.dart';
 
 const _kScaleDownCurve = Interval(0, 0.3, curve: Curves.easeOutCubic);
 const _kSlideOutCurve = Curves.easeOutCubic;
@@ -35,7 +35,7 @@ class ZoomScaffold extends AnimatedWidget {
   final Curve slideOutCurve;
   final double translationRatio;
   final Widget child;
-  final OpenableChangeNotifier notifier;
+  final OpenableController notifier;
 
   @override
   Widget build(BuildContext context) {

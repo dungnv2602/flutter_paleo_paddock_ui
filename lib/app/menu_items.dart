@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sized_context/sized_context.dart';
 import 'package:textstyle_extensions/textstyle_extensions.dart';
 import 'package:time/time.dart';
 
-import '../shared/index.dart';
-import 'notifiers/index.dart';
+import '../shared/_shared.dart';
+import 'notifiers/_notifiers.dart';
+
+const _menuItemCurve = Curves.easeOutCubic;
+const _indicatorCurve = Curves.fastOutSlowIn;
+const _indicatorDelayInterval = Interval(0.5, 1.0, curve: _indicatorCurve);
 
 class HiddenMenuItems extends StatefulWidget {
   const HiddenMenuItems({
@@ -16,28 +21,16 @@ class HiddenMenuItems extends StatefulWidget {
   })  : assert(initialSelected <= models.length - 1),
         super(key: key);
 
-  final OpenableChangeNotifier controller;
+  final OpenableController controller;
   final List<HiddenMenuItemModel> models;
   final ValueChanged<int> onItemSelected;
   final int initialSelected;
-
-  static void _setMenuItemSize(BuildContext context, Size value) {
-    final state = context.findAncestorStateOfType<_HiddenMenuItemsState>();
-    if (state == null) throw FlutterError('_HiddenMenuItemsState not found!');
-    state._notifyMenuItemSize(value);
-  }
-
   @override
   _HiddenMenuItemsState createState() => _HiddenMenuItemsState();
 }
 
 class _HiddenMenuItemsState extends State<HiddenMenuItems>
     with SingleTickerProviderStateMixin {
-  static const _menuItemCurve = Curves.easeOutCubic;
-  static const _indicatorCurve = Curves.fastOutSlowIn;
-  static const _indicatorDelayInterval =
-      Interval(0.5, 1.0, curve: _indicatorCurve);
-
   AnimationController _indicatorController;
   Tween<double> _indicatorYWhenMenuOpen = Tween<double>(begin: 0, end: 0);
   Tween<double> _indicatorYWhenMenuClose = Tween<double>(begin: 0, end: 0);
@@ -124,10 +117,40 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
     _indicatorYWhenAnIndexIsSelected = Tween<double>(begin: 0, end: 0);
   }
 
-  Widget _buildAnimatedIndicator(OpenableChangeNotifier controller) {
+  @override
+  void initState() {
+    super.initState();
+    _lastSelectedIndex = widget.initialSelected;
+    _selectedIndex = widget.initialSelected;
+
+    _menuItemSlideIntervals =
+        _initializeMenuItemSlideIntervals(widget.models.length);
+
+    _indicatorController = AnimationController(
+      vsync: this,
+      duration: 300.milliseconds,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    /// Provide this ViewModel/State to the sub-views, for easily call
+    return Provider.value(
+      value: this,
+      child: _HiddenMenuItemsView(this),
+    );
+  }
+}
+
+class _HiddenMenuItemsView
+    extends StatefulView<HiddenMenuItems, _HiddenMenuItemsState> {
+  const _HiddenMenuItemsView(_HiddenMenuItemsState state, {Key key})
+      : super(state, key: key);
+
+  Widget _buildAnimatedIndicator(OpenableController controller) {
     final indicator = Container(
       width: 5,
-      height: _menuItemSize.height,
+      height: state._menuItemSize.height,
       child: Container(
         color: Colors.red,
         margin: const EdgeInsets.symmetric(vertical: 8),
@@ -150,7 +173,7 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
           case OpenableState.closing:
             return Transform(
               transform: Matrix4.translationValues(
-                  0, _indicatorYWhenMenuClose.transform(value), 0),
+                  0, state._indicatorYWhenMenuClose.transform(value), 0),
               child: fadeIndicator,
             );
             break;
@@ -158,7 +181,7 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
           case OpenableState.opening:
             return Transform(
               transform: Matrix4.translationValues(
-                  0, _indicatorYWhenMenuOpen.transform(value), 0),
+                  0, state._indicatorYWhenMenuOpen.transform(value), 0),
               child: fadeIndicator,
             );
             break;
@@ -168,41 +191,31 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
       },
     );
 
-    final indicatorWhenAnIndexIsSelected = AnimatedBuilder(
-      animation: _indicatorController,
+    return AnimatedBuilder(
+      animation: state._indicatorController,
       builder: (_, __) {
-        final value = _indicatorCurve.transform(_indicatorController.value);
+        final value =
+            _indicatorCurve.transform(state._indicatorController.value);
 
         return Transform(
           transform: Matrix4.translationValues(
-              0, _indicatorYWhenAnIndexIsSelected.transform(value), 0),
+              0, state._indicatorYWhenAnIndexIsSelected.transform(value), 0),
           child: indicatorWhenMenuOpenAndClose,
         );
       },
     );
-
-    return indicatorWhenAnIndexIsSelected;
-  }
-
-  List<Widget> _buildMenuItems(OpenableChangeNotifier controller) {
-    final menuItems = <Widget>[];
-    for (var index = 0; index < widget.models.length; index++) {
-      final model = widget.models[index];
-      menuItems.add(_buildMenuItem(controller, index, model));
-    }
-    return menuItems;
   }
 
   Widget _buildMenuItem(
-      OpenableChangeNotifier controller, int index, HiddenMenuItemModel model) {
-    final menuItem = HiddenMenuItem(
+      OpenableController controller, int index, HiddenMenuItemModel model) {
+    final menuItem = _HiddenMenuItem(
       title: model.title,
       icon: model.icon,
-      color: _isIndexSelected(index) ? Colors.red : Colors.white,
+      color: state._isIndexSelected(index) ? Colors.red : Colors.white,
       onPressed: () async {
-        _notifyAnIndexIsSelected(index);
-        await _animateIndicatorAtSelectedIndex();
-        widget.onItemSelected?.call(index);
+        state._notifyAnIndexIsSelected(index);
+        await state._animateIndicatorAtSelectedIndex();
+        state.widget.onItemSelected?.call(index);
       },
     );
 
@@ -220,7 +233,8 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
             return fadeMenuItem;
           case OpenableState.opened:
           case OpenableState.opening:
-            final value = _menuItemSlideIntervalAt(index)
+            final value = state
+                ._menuItemSlideIntervalAt(index)
                 .transform(controller.animationValue);
             final translateY = context.heightPx * (1 - value);
             return Transform(
@@ -233,19 +247,13 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _lastSelectedIndex = widget.initialSelected;
-    _selectedIndex = widget.initialSelected;
-
-    _menuItemSlideIntervals =
-        _initializeMenuItemSlideIntervals(widget.models.length);
-
-    _indicatorController = AnimationController(
-      vsync: this,
-      duration: 300.milliseconds,
-    );
+  List<Widget> _buildMenuItems(OpenableController controller) {
+    final menuItems = <Widget>[];
+    for (var index = 0; index < widget.models.length; index++) {
+      final model = widget.models[index];
+      menuItems.add(_buildMenuItem(controller, index, model));
+    }
+    return menuItems;
   }
 
   @override
@@ -254,20 +262,22 @@ class _HiddenMenuItemsState extends State<HiddenMenuItems>
 
     return Stack(
       children: [
-        Column(children: _buildMenuItems(widget.controller)),
+        Column(
+          children: _buildMenuItems(widget.controller),
+        ),
         _buildAnimatedIndicator(widget.controller),
       ],
     );
   }
 }
 
-class HiddenMenuItem extends StatefulWidget {
-  const HiddenMenuItem({
+class _HiddenMenuItem extends StatefulWidget {
+  const _HiddenMenuItem({
     Key key,
     this.icon,
     this.color,
-    @required this.title,
     this.onPressed,
+    @required this.title,
   })  : assert(title != null),
         super(key: key);
 
@@ -280,7 +290,7 @@ class HiddenMenuItem extends StatefulWidget {
   _HiddenMenuItemState createState() => _HiddenMenuItemState();
 }
 
-class _HiddenMenuItemState extends State<HiddenMenuItem> {
+class _HiddenMenuItemState extends State<_HiddenMenuItem> {
   @override
   void initState() {
     super.initState();
@@ -289,7 +299,7 @@ class _HiddenMenuItemState extends State<HiddenMenuItem> {
 
   void afterLayout() {
     final renderBox = getRenderBoxFromContext(context);
-    HiddenMenuItems._setMenuItemSize(context, renderBox.size);
+    context.read<_HiddenMenuItemsState>()._notifyMenuItemSize(renderBox.size);
   }
 
   @override

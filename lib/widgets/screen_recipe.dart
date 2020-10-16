@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:textstyle_extensions/textstyle_extensions.dart';
 
-import '../shared/index.dart';
+import '../shared/_shared.dart';
 
 class ScreenRecipe {
   const ScreenRecipe({
