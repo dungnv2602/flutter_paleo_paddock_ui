@@ -19,6 +19,7 @@ dependencies:
   animations: ^1.1.2
 
   # state
+  flutter_bloc: ^6.0.6
   flutter_riverpod: ^0.11.1
   provider: ^4.3.2+2
   state_notifier: ^0.6.0

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_state_notifier/flutter_state_notifier.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../data.dart';
 import '../widgets/index.dart';
@@ -16,40 +15,38 @@ class HiddenMenu extends StatefulWidget {
 }
 
 class _HiddenMenuState extends State<HiddenMenu> with TickerProviderStateMixin {
-  OpenableStateNotifier _openableNotifier;
-  SelectedMenuIndexNotifier _selectedIndexNotifier;
+  OpenableCubit _openableNotifier;
+  SelectedMenuIndexCubit _selectedIndexNotifier;
 
   @override
   void initState() {
     super.initState();
-    _openableNotifier = OpenableStateNotifier(vsync: this);
-    _selectedIndexNotifier = SelectedMenuIndexNotifier(initialIndex: 2);
+    _openableNotifier = OpenableCubit(vsync: this);
+    _selectedIndexNotifier = SelectedMenuIndexCubit(initialIndex: 2);
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        StateNotifierProvider<OpenableStateNotifier, OpenableProperties>(
+        BlocProvider(
           create: (_) => _openableNotifier,
         ),
-        StateNotifierProvider<SelectedMenuIndexNotifier, int>(
+        BlocProvider(
           create: (_) => _selectedIndexNotifier,
         ),
       ],
-      builder: (_, __) {
-        return Stack(
-          children: const [
-            SafeArea(
-              top: false,
-              child: MenuScreen(),
-            ),
-            SafeArea(
-              child: ZoomScaffoldScreen(),
-            ),
-          ],
-        );
-      },
+      child: Stack(
+        children: const [
+          SafeArea(
+            top: false,
+            child: MenuScreen(),
+          ),
+          SafeArea(
+            child: ZoomScaffoldScreen(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -61,12 +58,11 @@ class ZoomScaffoldScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     debugPrint('ZoomScaffoldScreen rebuild');
 
-    final openable = context.watch<OpenableStateNotifier>();
+    final openable = context.bloc<OpenableCubit>();
 
     return ZoomScaffold(
-      child: StateNotifierBuilder<int>(
-        stateNotifier: context.watch<SelectedMenuIndexNotifier>(),
-        builder: (_, selectedIndex, __) {
+      child: BlocBuilder<SelectedMenuIndexCubit, int>(
+        builder: (_, selectedIndex) {
           return ScreenRecipeBuilder(
             recipe: restaurantScreens[selectedIndex],
             onMenuPressed: openable.toggle,
@@ -84,8 +80,8 @@ class MenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     debugPrint('MenuScreen rebuild');
 
-    final openable = context.watch<OpenableStateNotifier>();
-    final selectedIndex = context.watch<SelectedMenuIndexNotifier>();
+    final openable = context.bloc<OpenableCubit>();
+    final selectedIndex = context.bloc<SelectedMenuIndexCubit>();
 
     return Container(
       decoration: const BoxDecoration(
@@ -107,7 +103,7 @@ class MenuScreen extends StatelessWidget {
                 selectedIndex.notifySelectedIndex(index);
                 openable.toggle();
               },
-              initialSelected: selectedIndex.state, // TODO: how to fix this?
+              initialSelected: selectedIndex.state,
               models: restaurantScreens
                   .map((screen) => HiddenMenuItemModel(title: screen.title))
                   .toList(growable: false),

@@ -1,13 +1,13 @@
+import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:time/time.dart';
 
 import '../../shared/index.dart';
 import 'openable_state.dart';
 
-class OpenableStateNotifier extends StateNotifier<OpenableProperties> {
-  OpenableStateNotifier({
+class OpenableCubit extends Cubit<OpenableProperties> {
+  OpenableCubit({
     @required TickerProvider vsync,
     Duration duration,
     Duration reverseDuration,
@@ -24,22 +24,24 @@ class OpenableStateNotifier extends StateNotifier<OpenableProperties> {
   }
 
   void _animationValueListener() {
-    state = state.copyWith(
-      animationValue: _controller.value,
-      reverseAnimationValue: 1 - _controller.value,
+    emit(
+      state.copyWith(
+        animationValue: _controller.value,
+        reverseAnimationValue: 1 - _controller.value,
+      ),
     );
   }
 
   void _animationStatusListener(AnimationStatus status) {
     status.when<void>(
       onForward: (_) =>
-          state = state.copyWith(openableState: OpenableState.opening),
+          emit(state.copyWith(openableState: OpenableState.opening)),
       onCompleted: (_) =>
-          state = state.copyWith(openableState: OpenableState.opened),
+          emit(state.copyWith(openableState: OpenableState.opened)),
       onReverse: (_) =>
-          state = state.copyWith(openableState: OpenableState.closing),
+          emit(state.copyWith(openableState: OpenableState.closing)),
       onDismissed: (_) =>
-          state = state.copyWith(openableState: OpenableState.closed),
+          emit(state.copyWith(openableState: OpenableState.closed)),
     );
   }
 
@@ -49,20 +51,20 @@ class OpenableStateNotifier extends StateNotifier<OpenableProperties> {
 
   void open() => _controller.forward();
 
-  void close() => _controller.reverse();
+  void shut() => _controller.reverse();
 
   void toggle() {
     if (state.openableState.isClosed) {
       open();
     } else if (state.openableState.isOpened) {
-      close();
+      shut();
     }
   }
 
   @override
-  void dispose() {
+  Future<void> close() {
     _controller.dispose();
-    super.dispose();
+    return super.close();
   }
 }
 

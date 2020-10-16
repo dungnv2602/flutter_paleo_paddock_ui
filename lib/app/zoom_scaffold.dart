@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sized_context/sized_context.dart';
 import 'notifiers/index.dart';
 
@@ -37,48 +37,50 @@ class ZoomScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final properties = context.watch<OpenableProperties>();
+    return BlocBuilder<OpenableCubit, OpenableProperties>(
+      builder: (context, properties) {
+        final menuPercent = properties.animationValue;
 
-    final menuPercent = properties.animationValue;
+        double translationValue;
+        double scaleValue;
 
-    double translationValue;
-    double scaleValue;
+        switch (properties.openableState) {
+          case OpenableState.opened:
+          case OpenableState.opening:
+            translationValue = context.widthPx *
+                translationRatio *
+                slideOutCurve.transform(menuPercent);
+            scaleValue = 1 - scaleRatio * scaleDownCurve.transform(menuPercent);
+            break;
+          case OpenableState.closed:
+          case OpenableState.closing:
+            translationValue = context.widthPx *
+                translationRatio *
+                slideInCurve.transform(menuPercent);
+            scaleValue = 1 - scaleRatio * scaleUpCurve.transform(menuPercent);
+            break;
+        }
 
-    switch (properties.openableState) {
-      case OpenableState.opened:
-      case OpenableState.opening:
-        translationValue = context.widthPx *
-            translationRatio *
-            slideOutCurve.transform(menuPercent);
-        scaleValue = 1 - scaleRatio * scaleDownCurve.transform(menuPercent);
-        break;
-      case OpenableState.closed:
-      case OpenableState.closing:
-        translationValue = context.widthPx *
-            translationRatio *
-            slideInCurve.transform(menuPercent);
-        scaleValue = 1 - scaleRatio * scaleUpCurve.transform(menuPercent);
-        break;
-    }
-
-    return Transform(
-      transform: Matrix4.translationValues(
-        translationValue,
-        0,
-        0,
-      )..scale(scaleValue, scaleValue),
-      alignment: Alignment.centerLeft,
-      child: Container(
-        decoration: const BoxDecoration(
-          boxShadow: [
-            _kScaffoldShadow,
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10 * menuPercent),
-          child: child,
-        ),
-      ),
+        return Transform(
+          transform: Matrix4.translationValues(
+            translationValue,
+            0,
+            0,
+          )..scale(scaleValue, scaleValue),
+          alignment: Alignment.centerLeft,
+          child: Container(
+            decoration: const BoxDecoration(
+              boxShadow: [
+                _kScaffoldShadow,
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10 * menuPercent),
+              child: child,
+            ),
+          ),
+        );
+      },
     );
   }
 }
