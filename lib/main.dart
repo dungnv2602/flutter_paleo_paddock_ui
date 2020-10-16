@@ -5,7 +5,9 @@ import 'app/hidden_menu.dart';
 
 // design: https://dribbble.com/shots/2729372-Paleo-Paddock-ios-application-menu-animation
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         textTheme: GoogleFonts.bebasNeueTextTheme(),
       ),
-      home: const HiddenMenu(),
+      home: HiddenMenu(),
     );
   }
 }
