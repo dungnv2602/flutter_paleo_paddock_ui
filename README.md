@@ -10,6 +10,9 @@ In this repo, I have gone through several, including:
 2. Provider + ChangeNotifier
 3. Provider + StateNotifier
 4. Riverpod (Thanks to [tbm98](https://github.com/tbm98) for his PRs on riverpod branch)
+5. Cubit/Bloc
+6. Provider + [WidgetView Pattern](https://blog.gskinner.com/archives/2020/02/flutter-widgetview-a-simple-separation-of-layout-and-logic.html)
+7. [MVC+S](https://blog.gskinner.com/archives/2020/09/flutter-state-management-with-mvcs.html). This is an architure which is overkill in this dead simple example, for experiment only.
 
 You can check them out in different branches above.
 
