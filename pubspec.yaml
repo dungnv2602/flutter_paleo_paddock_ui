@@ -25,7 +25,7 @@ dependencies:
   flutter_state_notifier: ^0.6.1
   equatable: ^1.2.5
   get_it: ^5.0.0
-  get_it_mixin: ^1.0.0 
+  get_it_mixin: ^1.0.0
 
 
   # Flutter-extensions

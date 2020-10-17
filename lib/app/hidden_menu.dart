@@ -19,12 +19,14 @@ class _HiddenMenuState extends State<HiddenMenu>
   @override
   Widget build(BuildContext context) {
     pushScope(
-        init: (sl) => sl.registerSingleton(
-            HiddenMenuNotifier(
-              vsync: this,
-              initialIndex: 1,
-            ),
-            dispose: (HiddenMenuNotifier x) => x.dispose()));
+      init: (sl) => sl.registerSingleton(
+        HiddenMenuNotifier(
+          vsync: this,
+          initialIndex: 1,
+        ),
+        dispose: (HiddenMenuNotifier x) => x.dispose(),
+      ),
+    );
 
     return Stack(
       children: [
