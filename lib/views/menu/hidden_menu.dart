@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../data.dart';
-import '../shared/_shared.dart';
+import '../../app_extensions.dart';
 import '../widgets/_widgets.dart';
 import 'menu_items.dart';
-import 'notifiers/_notifiers.dart';
+import 'menu_title.dart';
 import 'zoom_scaffold.dart';
+import '../../models/_models.dart';
+import '../../commands/_commands.dart';
 
 class HiddenMenu extends StatefulWidget {
   const HiddenMenu({Key key}) : super(key: key);
@@ -15,7 +16,10 @@ class HiddenMenu extends StatefulWidget {
   _HiddenMenuState createState() => _HiddenMenuState();
 }
 
-class _HiddenMenuState extends State<HiddenMenu> with TickerProviderStateMixin {
+class _HiddenMenuState extends State<HiddenMenu> with TickerProviderStateMixin, 
+  AutomaticKeepAliveClientMixin
+
+ {
   OpenableController _openableController;
   SelectedMenuIndexNotifier _selectedIndex;
 
@@ -98,6 +102,9 @@ class MenuScreen extends StatelessWidget {
     final openable = state._openableController;
     final selectedIndex = state._selectedIndex;
 
+    final isSignedIn =
+        context.select<UserModel, bool>((user) => user.isSignedIn);
+
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -119,7 +126,7 @@ class MenuScreen extends StatelessWidget {
                 openable.toggle();
               },
               initialSelected: selectedIndex.value,
-              models: restaurantScreens
+              models: getRestaurantScreenRecipes(isSignedIn: isSignedIn)
                   .map((screen) => HiddenMenuItemModel(title: screen.title))
                   .toList(growable: false),
             ),

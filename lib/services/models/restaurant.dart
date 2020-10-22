@@ -29,6 +29,12 @@ class Restaurant extends Equatable {
     );
   }
 
+  static List<Restaurant> fromMaps(List<Map<String, dynamic>> maps) {
+    if (maps == null) return null;
+    return List.unmodifiable(
+        maps.map<Restaurant>((x) => Restaurant.fromMap(x)));
+  }
+
   final IconData icon;
   final Color iconColor;
   final String imagePath;

@@ -2,11 +2,7 @@ import 'package:flutter/foundation.dart' show describeEnum;
 import 'package:flutter/widgets.dart';
 import 'package:time/time.dart';
 
-import '../../shared/_shared.dart';
-
-class SelectedMenuIndexNotifier extends ValueNotifier<int> {
-  SelectedMenuIndexNotifier({int initialIndex}) : super(initialIndex ?? 0);
-}
+import 'utils.dart';
 
 /// AnimationController wrapper especially designed for open-close widget
 class OpenableController extends ChangeNotifier {
@@ -63,8 +59,6 @@ class OpenableController extends ChangeNotifier {
     super.dispose();
   }
 }
-
-
 
 enum OpenableState {
   closed,

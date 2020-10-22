@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:textstyle_extensions/textstyle_extensions.dart';
 
-import '../shared/_shared.dart';
+import '../../app_extensions.dart';
+import '../../services/models/restaurant.dart';
 
 const _kGray = Color(0xFFAAAAAA);
 

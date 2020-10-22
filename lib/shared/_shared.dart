@@ -1,3 +1,3 @@
-export 'restaurant.dart';
+export 'openable_controller.dart';
 export 'utils.dart';
-export 'widget_view_pattern.dart';
+export 'widget_view.dart';

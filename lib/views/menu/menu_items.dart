@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sized_context/sized_context.dart';
-import 'package:textstyle_extensions/textstyle_extensions.dart';
-import 'package:time/time.dart';
 
-import '../shared/_shared.dart';
-import 'notifiers/_notifiers.dart';
+import '../../app_extensions.dart';
 
 const _menuItemCurve = Curves.easeOutCubic;
 const _indicatorCurve = Curves.fastOutSlowIn;

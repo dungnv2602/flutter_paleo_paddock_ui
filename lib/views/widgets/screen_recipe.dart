@@ -1,8 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:textstyle_extensions/textstyle_extensions.dart';
+import 'package:paleo_paddock_ui/commands/restaurant_commands.dart';
 
-import '../shared/_shared.dart';
+import '../../app_extensions.dart';
+
+List<ScreenRecipe> getRestaurantScreenRecipes({bool isSignedIn}) {
+  final recipes = <ScreenRecipe>[];
+
+  recipes.add(
+    ScreenRecipe(
+      title: 'THE PALEO PADDOCK',
+      backgroundPath: 'assets/images/paddock/wood_bk.jpg',
+    ),
+  );
+
+  recipes.add(
+    ScreenRecipe(
+      title: 'THE DARK GRUNGE',
+      backgroundPath: 'assets/images/paddock/dark_grunge_bk.jpg',
+    ),
+  );
+
+  recipes.add(
+    ScreenRecipe(
+      title: 'RECIPES',
+      backgroundPath: 'assets/images/paddock/other_screen_bk.jpg',
+    ),
+  );
+
+  if (isSignedIn) {
+    recipes.add(
+      ScreenRecipe(
+        title: 'MY FAVOURITE',
+        backgroundPath: 'assets/images/paddock/other_screen_bk.jpg',
+      ),
+    );
+  }
+
+  recipes.add(
+    const ScreenRecipe(
+      title: 'SETTINGS',
+      body: Center(child: Text('SETTINGS')),
+    ),
+  );
+
+  return List.unmodifiable(recipes);
+}
+
+class RestaurantListView extends StatefulWidget {
+  const RestaurantListView({
+    Key key,
+    @required this.streetName,
+  }) : super(key: key);
+
+  final String streetName;
+
+  @override
+  _RestaurantListViewState createState() => _RestaurantListViewState();
+}
+
+class _RestaurantListViewState extends State<RestaurantListView> {
+  @override
+  void initState() {
+    super.initState();
+    GetRestaurantsByStreetCommand().execute(widget.streetName);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
 
 class ScreenRecipe {
   const ScreenRecipe({

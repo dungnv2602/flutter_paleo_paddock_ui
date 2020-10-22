@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
 /// This Design Pattern comes from: https://blog.gskinner.com/archives/2020/02/flutter-widgetview-a-simple-separation-of-layout-and-logic.html
-///
-/// https://github.com/gskinnerTeam/flokk/blob/master/flokk_src/lib/views/welcome/welcome_page.dart
-///
 
 abstract class StatefulView<T1 extends StatefulWidget, T2 extends State<T1>>
     extends StatelessWidget {
